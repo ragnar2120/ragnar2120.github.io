@@ -1,0 +1,268 @@
+#P1
+from heapq import heappush,heappop,heapify
+from collections import defaultdict
+def HuffmanEncode(characterFrequency):
+    heap=[[freq,[sym,""]]for sym,freq in characterFrequency.items()]
+    heapify(heap)
+    while len(heap)>1:
+        lo=heappop(heap)
+        hi=heappop(heap)
+        for pair in lo[1:]:
+            pair[1]='0'+pair[1]
+        for pair in hi[1:]:
+            pair[1]='1'+pair[1]
+        heappush(heap,[lo[0]+hi[0]]+lo[1:]+hi[1:])
+    return sorted(heappop(heap)[1:],key=lambda p:(len(p[-1]),p))
+inputText=input('enter word to encrypt:')
+characterFrequency=defaultdict(int)
+for character in inputText:
+    characterFrequency[character]+=1
+print(characterFrequency)
+huffCodes=HuffmanEncode(characterFrequency)
+print("Symbol\t\tFrequency\t\tHuffman Code")
+for p in huffCodes:
+    print("%s\t\t\t%s\t\t\t%s"%(p[0],characterFrequency[p[0]],p[1]))
+
+#P2
+def egcd(a,b):
+  if a==0:
+    return (b,0,1)
+  else:
+    gcd, x,y = egcd (b % a, a)
+    return (gcd,y-(b//a)*x,x)
+a=int(input("Enter a: "))
+b=int(input("Enter b: "))
+gcd, x, y = egcd(a,b)
+print("GCD: ",gcd, "\nx: ",x, "\ny: ",y)
+
+#P3
+def set_cover(universe, subsets):
+  elements = set(e for s in subsets for e in s)
+  if elements != universe:
+    return None
+  covered = set()
+  cover = []
+  while covered != elements:
+    subset = max(subsets, key=lambda s: len(s - covered))
+    print(subset)
+    cover.append(subset)
+    covered |= subset
+  return cover
+universe = set([1,2,3,4,5,6,7,8,9,10])
+subsets = [
+
+set([1, 2, 3, 4, 5]),
+set([1, 2, 3, 8, 9, 10]),
+set([4, 5, 7]),
+set([5, 6, 7]),
+set([6, 7, 8, 9, 10])
+]
+cover = set_cover(universe, subsets)
+print(cover)
+
+#P4
+import random
+def permuteSort(a):
+  n = len(a)
+  while (is_sorted(a)== False):
+    shuffle(a)
+def is_sorted(a):
+  n = len(a)
+  for i in range(0, n-1):
+    if (a[i] > a[i+1] ):
+      return False
+  return True
+def shuffle(a):
+  n = len(a)
+  for i in range (0,n):
+     r = random.randint(0,n-1)
+     print(a)
+     a[i], a[r] = a[r], a[i]
+a=[]
+n=int(input("Enter the number of elements in array: "))
+for i in range(0,n):
+  print("Enter",i," element:")
+  x=int(input())
+  a.append(x)
+print('array before sorting' )
+print(a)
+permuteSort(a)
+print("Sorted array :")
+print(a)
+
+def permute(a, l, r):
+  if l == r:
+     print(a)
+  else:
+      for i in range(l, r + 1):
+        a[l], a[i] = a[i], a[l]
+        permute(a, l + 1, r)
+        a[l], a[i] = a[i], a[l]
+data = [1,8,9]
+n = len(data)
+a = list(data)
+permute(a, 0, n - 1)
+
+#P5
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+irs=pd.read_csv('./Iris.csv')
+# irs = datasets.load_iris() #load dataset
+irs.plot(kind='scatter',x='SepalLengthCm',y='SepalWidthCm')
+plt.show()
+plt.scatter(irs['SepalLengthCm'],irs['SepalWidthCm'])
+plt.xlabel('SepalLength')
+plt.ylabel('SepalWidth')
+plt.title('SepalLength vs SepalWidth' )
+plt.show()
+plt.bar(irs['SepalLengthCm'],irs['SepalWidthCm'])
+plt.xlabel('SepalLength')
+plt.ylabel('SepalWidth')
+plt.title('SepalLength vs SepalWidth' )
+plt.show()
+irs.plot.box()
+irs.hist()
+sns.set_style("whitegrid")
+sns.FacetGrid(irs,hue="Species",height=4).map(plt.scatter,"SepalLengthCm","SepalWidthCm").add_legend()
+plt.show()
+
+#P6
+#Practical6
+#Performing statistical methods on kaggle data sets.
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+irs=pd.read_csv('Iris.csv')
+print(irs.describe())
+print("Mean: ",irs['SepalWidthCm'].mean()) #mode(),median()
+print("Mode: ",irs['SepalWidthCm'].mode())
+print("Median: ",irs['SepalWidthCm'].median())
+print("Covariance: ",irs['SepalWidthCm'].cov(irs['SepalLengthCm']))
+print("Standard Deviation: ",irs['SepalWidthCm'].std())
+
+#P7
+class Graph():
+
+	def __init__(self, vertices):
+		self.V = vertices
+		self.graph = [[0 for column in range(vertices)]
+					for row in range(vertices)]
+
+	def printSolution(self, dist):
+		print("Vertex \t Distance from Source")
+		for node in range(self.V):
+			print(node, "\t\t", dist[node])
+
+	def minDistance(self, dist, sptSet):
+
+		min = 1e7
+
+		for v in range(self.V):
+			if dist[v] < min and sptSet[v] == False:
+				min = dist[v]
+				min_index = v
+
+		return min_index
+
+	def dijkstra(self, src):
+
+		dist = [1e7] * self.V
+		dist[src] = 0
+		sptSet = [False] * self.V
+
+		for cout in range(self.V):
+
+			u = self.minDistance(dist, sptSet)
+
+			sptSet[u] = True
+
+			for v in range(self.V):
+				if (self.graph[u][v] > 0 and
+				sptSet[v] == False and
+				dist[v] > dist[u] + self.graph[u][v]):
+					dist[v] = dist[u] + self.graph[u][v]
+
+		self.printSolution(dist)
+
+g = Graph(9)
+g.graph = [[0, 4, 0, 0, 0, 0, 0, 8, 0],
+		[4, 0, 8, 0, 0, 0, 0, 11, 0],
+		[0, 8, 0, 7, 0, 4, 0, 0, 2],
+		[0, 0, 7, 0, 9, 14, 0, 0, 0],
+		[0, 0, 0, 9, 0, 10, 0, 0, 0],
+		[0, 0, 4, 14, 10, 0, 2, 0, 0],
+		[0, 0, 0, 0, 0, 2, 0, 1, 6],
+		[8, 11, 0, 0, 0, 0, 1, 0, 7],
+		[0, 0, 2, 0, 0, 0, 6, 7, 0]
+		]
+
+g.dijkstra(0)
+
+#P8
+class Graph:
+    def __init__(self, vertices):
+        self.V = vertices
+        self.graph = []
+
+    def add_edge(self, u, v, w):
+        self.graph.append([u, v, w])
+
+
+    def find(self, parent, i):
+        if parent[i] == i:
+            return i
+        return self.find(parent, parent[i])
+
+    def apply_union(self, parent, rank, x, y):
+        xroot = self.find(parent, x)
+        yroot = self.find(parent, y)
+        if rank[xroot] < rank[yroot]:
+            parent[xroot] = yroot
+        elif rank[xroot] > rank[yroot]:
+            parent[yroot] = xroot
+        else:
+            parent[yroot] = xroot
+            rank[xroot] += 1
+
+    def kruskal_algo(self):
+        result = []
+        i, e = 0, 0
+        self.graph = sorted(self.graph, key=lambda item: item[2])
+        parent = []
+        rank = []
+        for node in range(self.V):
+            parent.append(node)
+            rank.append(0)
+        while e < self.V - 1:
+            u, v, w = self.graph[i]
+            i = i + 1
+            x = self.find(parent, u)
+            y = self.find(parent, v)
+            if x != y:
+                e = e + 1
+                result.append([u, v, w])
+                self.apply_union(parent, rank, x, y)
+        for u, v, weight in result:
+            print("%d - %d: %d" % (u, v, weight))
+
+
+g = Graph(6)
+g.add_edge(0, 1, 4)
+g.add_edge(0, 2, 4)
+g.add_edge(1, 2, 2)
+g.add_edge(1, 0, 4)
+g.add_edge(2, 0, 4)
+g.add_edge(2, 1, 2)
+g.add_edge(2, 3, 3)
+g.add_edge(2, 5, 2)
+g.add_edge(2, 4, 4)
+g.add_edge(3, 2, 3)
+g.add_edge(3, 4, 3)
+g.add_edge(4, 2, 4)
+g.add_edge(4, 3, 3)
+g.add_edge(5, 2, 2)
+g.add_edge(5, 4, 3)
+g.kruskal_algo()
