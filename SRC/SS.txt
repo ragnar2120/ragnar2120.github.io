@@ -276,7 +276,7 @@ Message (script) : <script>alert("HELLO")</script>
 # Choose a language and click on select
 # url will be updated
 # you can insert js query after ?default= in url which will be then executed once you press enter
-# eg. 127.0.0.1/dvwa/vulnerabilities/xss_d/?default=<script>alert("Jay")</script>
+# eg. 127.0.0.1/dvwa/vulnerabilities/xss_d/?default=<script>alert("helooa")</script>
 ------------------------------------------------------------------------------
 # Now again go to DVWA Security and change it to high
 # Now the above queries will not be executed as the security is set to high
